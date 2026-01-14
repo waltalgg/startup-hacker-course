@@ -1,3 +1,4 @@
+/* Контейнер страницы */
 .container {
     max-width: 1100px;
     margin: 0 auto;
@@ -5,10 +6,12 @@
     font-family: Arial, sans-serif;
 }
 
+/* Заголовок */
 h1 {
     margin-bottom: 12px;
 }
 
+/* Панель управления */
 .controls {
     display: flex;
     gap: 20px;
@@ -35,19 +38,21 @@ h1 {
     background-color: #2980b9;
 }
 
+/* Сетка карточек */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
 }
 
+/* Карточка книги */
 .card {
     background: #ffffff;
     border-radius: 14px;
     padding: 16px;
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer
+    cursor: pointer;
 }
 
 .card:hover {
@@ -55,12 +60,14 @@ h1 {
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Обложка книги */
 .cover-wrapper {
     width: 100%;
     height: 300px;
     overflow: hidden;
     border-radius: 10px;
     margin-bottom: 12px;
+    position: relative;
 }
 
 .cover-wrapper img {
@@ -70,52 +77,25 @@ h1 {
     display: block;
 }
 
+/* Жанр книги */
 .genre {
     font-weight: bold;
     color: #666;
     margin-bottom: 6px;
 }
 
+/* 18+ */
 .adult {
     color: #d32f2f;
     font-weight: bold;
 }
 
+/* Малый рейтинг в карточке */
 .rating {
     font-size: 20px;
 }
 
-/* форма */
-.form {
-    margin-bottom: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.form input,
-.form textarea,
-.form select {
-    padding: 6px;
-}
-
-/* рейтинг */
-.rating span {
-    cursor: pointer;
-    font-size: 22px;
-    color: #ccc;
-    transition: color 0.12s ease;
-    user-select: none;
-}
-
-.rating span.active {
-    color: gold;
-}
-
-.cover-wrapper {
-    position: relative;
-}
-
+/* Большой рейтинг сверху */
 .big-rating {
     position: absolute;
     top: 10px;
@@ -129,13 +109,146 @@ h1 {
     color: #aaa;
 }
 
+/* Кнопки действий карточки */
 .actions {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
 }
 
+/* Статистика */
 .stats {
     margin-bottom: 16px;
     font-weight: bold;
+}
+
+/* Форма добавления/редактирования книги */
+.form {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.form label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.form input,
+.form textarea,
+.form select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.checkbox-wrapper {
+    flex: 0 0 auto;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.buttons-wrapper {
+    display: flex;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.buttons-wrapper button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.buttons-wrapper button:first-child {
+    background-color: #3498db;
+    color: white;
+}
+
+.buttons-wrapper button:first-child:hover {
+    background-color: #2980b9;
+}
+
+.buttons-wrapper button:last-child {
+    background-color: #ccc;
+    color: #333;
+}
+
+.buttons-wrapper button:last-child:hover {
+    background-color: #999;
+}
+
+/* Кнопки формы */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.form-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.form-actions button:first-child {
+    background-color: #3498db;
+    color: white;
+}
+
+.form-actions button:first-child:hover {
+    background-color: #2980b9;
+}
+
+.form-actions button:last-child {
+    background-color: #ccc;
+    color: #333;
+}
+
+.form-actions button:last-child:hover {
+    background-color: #999;
+}
+
+/* Интерактивные звёзды */
+.rating span {
+    cursor: pointer;
+    font-size: 22px;
+    color: #ccc;
+    transition: color 0.12s ease;
+    user-select: none;
+}
+
+.rating span.active {
+    color: gold;
 }

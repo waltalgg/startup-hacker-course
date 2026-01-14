@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import './App.css'
 import BookCard from './BookCard.vue'
 
@@ -112,6 +112,15 @@ const openCreateForm = () => {
 
 // Сохранить книгу
 const saveBook = () => {
+  if(!form.value.title.trim()){
+    alert('Отсутствует название книги!')
+    return
+  }
+  // Если нет обложки — ставим дефолтную
+  if (!form.value.cover.trim()) {
+    form.value.cover = noImageCover
+  }
+
   if (editingBookId.value){
     const book = books.value.find(b => b.id === editingBookId.value)
     Object.assign(book, form.value) // Записываем значения формы в книгу
@@ -128,6 +137,12 @@ const openEditForm = (book) => {
   form.value = { ...book }
   editingBookId.value = book.id
   isFormOpen.value = true
+
+  // Скролл к форме при нажатии на кнопку редактирования карточки
+  nextTick(() => {
+    const formElement = document.querySelector('.form')
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
 }
 
 // Удаление киниг
@@ -180,9 +195,16 @@ const resetForm = () => {
 
     <!-- Форма -->
     <div v-if="isFormOpen" class="form">
-      <input v-model="form.title" placeholder="Название">
+      <label>Название</label>
+      <input v-model="form.title" placeholder="Название книги">
+
+      <label>Описание</label>
       <textarea v-model="form.description" placeholder="Описание"></textarea>
-      <input v-model="form.cover" placeholder="URL обложки" />
+
+      <label>Обложка</label>
+      <input v-model="form.cover" placeholder="URL обложки">
+
+      <label>Жанр</label>
       <select v-model="form.genre">
         <option disabled value="">Выберите жанр</option>
         <option>Научная фантастика</option>
@@ -198,10 +220,17 @@ const resetForm = () => {
         <option>Киберпанк</option>
         <option>Эпическая фантастика</option>
       </select>
-      <label><input type="checkbox" v-model="form.adult" /> 18+</label>
+
       <div class="form-actions">
-        <button @click="saveBook">Сохранить</button>
-        <button @click="resetForm">Отменить</button>
+        <div class="checkbox-wrapper">
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="form.adult" /> 18+
+          </label>
+        </div>
+        <div class="buttons-wrapper">
+          <button @click="saveBook">Сохранить</button>
+          <button @click="resetForm">Отменить</button>
+        </div>
       </div>
     </div>
 
