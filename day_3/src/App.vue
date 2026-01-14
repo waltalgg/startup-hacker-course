@@ -9,6 +9,7 @@ import solarisCover from './assets/covers/solaris_cover.png'
 import earthCover from './assets/covers/earth_cover.png'
 import leftHandCover from './assets/covers/left_hand_cover.png'
 import picnicCover from './assets/covers/piknik_cover.png'
+import noImageCover from './assets/covers/no_image_cover.png'
 
 const books = ref([
   {
@@ -69,6 +70,8 @@ const books = ref([
 
 const showAdult = ref(false)
 const sortHighToLow = ref(true)
+const isFormOpen = ref(false)
+const editingBookId = ref(null)
 
 // Фильтр 18+
 const filteredBooks = computed(() => {
@@ -81,23 +84,130 @@ const sortedBooks = computed(() => {
       sortHighToLow.value ? b.rating - a.rating : a.rating - b.rating
   )
 })
+
+// Шаблон формы
+const form = ref({
+    title: '',
+    description: '',
+    cover: '',
+    genre: '',
+    adult: false,
+    rating: 0
+})
+
+// Статистика
+const totalBooks = computed(() => books.value.length)
+const averageRating = computed(() => {
+  const rated = books.value.filter(b => b.rating > 0) // Оставляем книги только с рейтингом > 0
+  if(!rated.length) return '0.00'
+  const avgRating = rated.reduce((sum,book) => sum + book.rating, 0) / rated.length // sum = 0
+  return avgRating.toFixed(2)
+})
+
+// Открытие формы добавления
+const openCreateForm = () => {
+  resetForm()
+  isFormOpen.value = true
+}
+
+// Сохранить книгу
+const saveBook = () => {
+  if (editingBookId.value){
+    const book = books.value.find(b => b.id === editingBookId.value)
+    Object.assign(book, form.value) // Записываем значения формы в книгу
+  } else {
+    books.value.push({
+      id: Date.now(),
+      ...form.value
+    })
+  }
+  resetForm()
+}
+// Редактировать книгу
+const openEditForm = (book) => {
+  form.value = { ...book }
+  editingBookId.value = book.id
+  isFormOpen.value = true
+}
+
+// Удаление киниг
+const deleteBook = (id) => {
+  books.value = books.value.filter(b => b.id !== id) // Удаляем по id
+}
+
+// Сброс рейтинга
+const resetRatings = () => {
+  books.value.forEach(b => b.rating = 0) // Задаем у всех книг значение рейтинга = 0
+}
+
+// Очистка формы
+const resetForm = () => {
+  form.value = {
+    title: '',
+    description: '',
+    cover: '',
+    genre: '',
+    adult: false,
+    rating: 0
+  }
+  editingBookId.value = null
+  isFormOpen.value = false
+}
+
 </script>
 
 <template>
   <div class="container">
-    <h1>📚 Мой рейтинг последниих прочитанных книг</h1>
+    <h1>📚 Рейтинг книг</h1>
 
+
+    <!-- Управление фильтрами -->
     <div class="controls">
       <label>
         <input type="checkbox" v-model="showAdult" /> Показывать 18+
       </label>
-      <button @click="sortHighToLow = !sortHighToLow">
-        Сортировать по рейтингу {{ sortHighToLow ? '▼' : '▲' }}
-      </button>
+
+      <button @click="sortHighToLow = !sortHighToLow">Сортировать по рейтингу {{ sortHighToLow ? '▼' : '▲' }}</button>
+      <button @click="openCreateForm">➕ Добавить</button>
+      <button @click="resetRatings">♻️ Сбросить рейтинги</button>
     </div>
 
+    <!-- Статистика -->
+    <div class="stats">
+      <p>Всего книг: {{ totalBooks }}</p>
+      <p>Средний рейтинг: {{ averageRating }}</p>
+    </div>
+
+    <!-- Форма -->
+    <div v-if="isFormOpen" class="form">
+      <input v-model="form.title" placeholder="Название">
+      <textarea v-model="form.description" placeholder="Описание"></textarea>
+      <input v-model="form.cover" placeholder="URL обложки" />
+      <select v-model="form.genre">
+        <option disabled value="">Выберите жанр</option>
+        <option>Научная фантастика</option>
+        <option>Фэнтези</option>
+        <option>Социальная фантастика</option>
+        <option>Философская фантастика</option>
+        <option>Твёрдая научная фантастика</option>
+        <option>Историческая фантастика</option>
+        <option>Приключения</option>
+        <option>Детектив</option>
+        <option>Ужасы</option>
+        <option>Романтика</option>
+        <option>Киберпанк</option>
+        <option>Эпическая фантастика</option>
+      </select>
+      <label><input type="checkbox" v-model="form.adult" /> 18+</label>
+      <div class="form-actions">
+        <button @click="saveBook">Сохранить</button>
+        <button @click="resetForm">Отменить</button>
+      </div>
+    </div>
+
+    <!-- Карточки -->
     <div class="grid">
-      <BookCard v-for="book in sortedBooks" :key="book.id" :book="book" />
+      <BookCard v-for="book in sortedBooks" :key="book.id" :book="book" @edit="openEditForm" @delete="deleteBook"/>
     </div>
   </div>
 </template>
